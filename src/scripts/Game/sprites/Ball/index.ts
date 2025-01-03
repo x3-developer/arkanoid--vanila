@@ -7,6 +7,7 @@ export default class Ball implements GameObjectInterface {
   private readonly color = '#0095DD';
   private velocityX = 100;
   private velocityY = -100;
+  private isBottomTouch = false;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -25,6 +26,10 @@ export default class Ball implements GameObjectInterface {
     return this.radius;
   }
 
+  public getIsBottomTouch(): boolean {
+    return this.isBottomTouch;
+  }
+
   public update(
     deltaTime: number,
     canvasWidth: number,
@@ -34,19 +39,18 @@ export default class Ball implements GameObjectInterface {
     let nextY = this.y + this.velocityY * (deltaTime / 1000);
 
     if (nextX - this.radius < 0) {
-      this.velocityX = -this.velocityX;
+      this.reverseXVelocity();
       nextX = this.radius;
     } else if (nextX + this.radius > canvasWidth) {
-      this.velocityX = -this.velocityX;
+      this.reverseXVelocity();
       nextX = canvasWidth - this.radius;
     }
 
     if (nextY - this.radius < 0) {
-      this.velocityY = -this.velocityY;
+      this.reverseYVelocity();
       nextY = this.radius;
     } else if (nextY + this.radius > canvasHeight) {
-      this.velocityY = -this.velocityY;
-      nextY = canvasHeight - this.radius;
+      this.isBottomTouch = true;
     }
 
     this.x = nextX;
@@ -63,5 +67,9 @@ export default class Ball implements GameObjectInterface {
 
   public reverseYVelocity(): void {
     this.velocityY = -this.velocityY;
+  }
+
+  public reverseXVelocity(): void {
+    this.velocityX = -this.velocityX;
   }
 }

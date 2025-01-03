@@ -5,6 +5,7 @@ import Paddle from './sprites/Paddle';
 export default class Game {
   private readonly ctx: CanvasRenderingContext2D;
   private readonly gameObjects: GameObjectInterface[] = [];
+  private isRunning: boolean = true;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -21,6 +22,7 @@ export default class Game {
 
     this.gameObjects.push(ball, paddle);
 
+    this.isRunning = true;
     this.gameLoop();
   }
 
@@ -29,6 +31,8 @@ export default class Game {
     const interval = 1000 / fps;
     let lastTime = performance.now();
     const loop = (time: number) => {
+      if (!this.isRunning) return;
+
       const deltaTime = time - lastTime;
 
       if (deltaTime > interval) {
@@ -49,8 +53,13 @@ export default class Game {
 
     for (const gameObject of this.gameObjects) {
       if (gameObject instanceof Ball) {
-        gameObject.update(deltaTime, canvasWidth, canvasHeight);
-        continue;
+        if (gameObject.getIsBottomTouch()) {
+          this.isRunning = false;
+          this.endGame();
+        } else {
+          gameObject.update(deltaTime, canvasWidth, canvasHeight);
+          continue;
+        }
       }
 
       if (gameObject instanceof Paddle) {
@@ -112,5 +121,11 @@ export default class Game {
 
       paddle.stop();
     });
+  }
+
+  private endGame(): void {
+    this.isRunning = false;
+    alert('Game Over');
+    location.reload();
   }
 }
