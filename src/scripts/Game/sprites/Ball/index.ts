@@ -5,8 +5,8 @@ export default class Ball implements GameObjectInterface {
   private y: number;
   private readonly radius = 10;
   private readonly color = '#0095DD';
-  private velocityX = 100;
-  private velocityY = -100;
+  private velocityX = 200;
+  private velocityY = -200;
   private isBottomTouch = false;
 
   constructor(x: number, y: number) {
@@ -63,6 +63,16 @@ export default class Ball implements GameObjectInterface {
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
+  }
+
+  public handlePaddleCollision(paddleY: number, paddleHeight: number): void {
+    if (
+      this.y + this.radius > paddleY &&
+      this.y + this.radius <= paddleY + paddleHeight
+    ) {
+      this.y = paddleY - this.radius;
+      this.velocityY = -this.velocityY;
+    }
   }
 
   public reverseYVelocity(): void {

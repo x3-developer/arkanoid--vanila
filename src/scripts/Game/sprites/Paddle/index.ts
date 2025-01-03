@@ -14,6 +14,14 @@ export default class Paddle implements GameObjectInterface {
     this.y = canvasHeight - this.height - 10;
   }
 
+  getY(): number {
+    return this.y;
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
   public update(deltaTime: number, canvasWidth: number): void {
     this.x += this.velocity * this.speed * (deltaTime / 1000);
 
@@ -53,6 +61,7 @@ export default class Paddle implements GameObjectInterface {
   ): boolean {
     return (
       ballY + ballRadius >= this.y &&
+      ballY - ballRadius <= this.y + this.height &&
       ballX >= this.x &&
       ballX <= this.x + this.width
     );

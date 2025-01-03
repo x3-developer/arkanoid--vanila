@@ -1,6 +1,7 @@
 import Ball from './sprites/Ball';
 import { GameObjectInterface } from './sprites/GameObjectInterface';
 import Paddle from './sprites/Paddle';
+import Brick from './sprites/Brick';
 
 export default class Game {
   private readonly ctx: CanvasRenderingContext2D;
@@ -19,6 +20,8 @@ export default class Game {
       this.ctx.canvas.height - 40
     );
     const paddle = new Paddle(this.ctx.canvas.width, this.ctx.canvas.height);
+
+    this.createBricks();
 
     this.gameObjects.push(ball, paddle);
 
@@ -76,10 +79,40 @@ export default class Game {
     const paddle = this.gameObjects.find(
       (gameObject) => gameObject instanceof Paddle
     );
+    const bricks = this.gameObjects.filter(
+      (gameObject) => gameObject instanceof Brick
+    );
+
+    if (ball) {
+      for (const brick of bricks) {
+        if (
+          brick.isActive() &&
+          brick.checkCollision(ball.getX(), ball.getY(), ball.getRadius())
+        ) {
+          ball.reverseYVelocity();
+        }
+      }
+    }
 
     if (ball && paddle) {
       if (paddle.checkCollision(ball.getX(), ball.getY(), ball.getRadius())) {
-        ball.reverseYVelocity();
+        ball.handlePaddleCollision(paddle.getY(), paddle.getHeight());
+      }
+    }
+  }
+
+  private createBricks(): void {
+    const brickWidth = (this.ctx.canvas.width - 16) / 10 - 16;
+    const brickHeight = 24;
+    const gap = 16;
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 10; j++) {
+        const x = j * (brickWidth + gap) + 16;
+        const y = i * (brickHeight + gap) + 48;
+        const brick = new Brick(x, y, brickWidth, brickHeight);
+
+        this.gameObjects.push(brick);
       }
     }
   }
