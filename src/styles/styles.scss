@@ -1,8 +1,22 @@
-@import "variables";
+@use "variables" as v;
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: $gameItemsColor;
 }
+
+html, body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+}
+
+canvas {
+  display: block;
+  border: 1px solid v.$gameItemsColor;
+  margin: auto;
+}
+
